@@ -1,0 +1,41 @@
+{
+  "name": "ai-prompts",
+  "version": "1.0.0",
+  "description": "Command line tool for generating AI prompts from templates",
+  "type": "module",
+  "main": "dist/cli.js",
+  "bin": {
+    "ai-prompts": "./dist/cli.js"
+  },
+  "scripts": {
+    "dev": "bun run src/cli.ts",
+    "build": "bun build src/cli.ts --outdir dist --target bun",
+    "start": "bun run dist/cli.js",
+    "cli": "bun run src/cli.ts",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [
+    "ai",
+    "prompts",
+    "templates",
+    "cli",
+    "handlebars"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^11.1.0",
+    "handlebars": "^4.7.8",
+    "inquirer": "^9.2.12",
+    "glob": "^10.3.10"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/inquirer": "^9.0.7",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "bun": ">=1.0.0"
+  }
+}

@@ -1,0 +1,40 @@
+---
+description: Use ALWAYS when writing TypeScript code to ensure consistent and type-safe handling of nullish values
+globs: src/**/*.{ts,tsx}
+---
+# TypeScript Nullish Coalescing Standards
+
+## Context
+- Applies when writing TypeScript code that needs to handle potentially undefined or null values
+- Ensures consistent and type-safe handling of nullish values
+- Prevents unexpected behavior with falsy values
+
+## Requirements
+- Use the nullish coalescing operator (`??`) instead of logical OR (`||`) for default values
+- Only use the logical OR operator (`||`) for actual boolean operations
+
+## Examples
+
+<example type="valid">
+```ts
+// Good: Using nullish coalescing for default values
+const label = config.displayText ?? "Unknown";
+
+// Good: Using logical OR for boolean operations
+const isValid = isActive || hasPermission;
+```
+This example correctly uses the nullish coalescing operator (`??`) for providing a default value when `displayText` might be null or undefined, and uses logical OR (`||`) for a boolean operation.
+</example>
+
+<example type="invalid">
+```ts
+// Bad: Using logical OR for default values
+const displayText = invertLevels
+  ? levelConfig.invertedDisplayText || levelConfig.displayText
+  : levelConfig.displayText;
+
+// This can cause unexpected behavior if invertedDisplayText is a falsy value
+// like an empty string or 0, which might be valid values in some contexts
+```
+This example incorrectly uses the logical OR operator (`||`) for default values, which can cause unexpected behavior with falsy values that are not null or undefined.
+</example>
