@@ -65,3 +65,15 @@ Optional content: {{conditionalParam}}
 
 export default myTemplateConfig;
 ```
+
+## Installing
+
+```bash
+# Build first
+bun run build
+
+bun link
+
+# Now script is available globally
+ai-prompts list
+```

@@ -1,5 +1,9 @@
 # System Patterns
 
+## Architecture Overview
+
+The AI Prompt Templates CLI follows a modular architecture with clear separation of concerns:
+
 ## Core Architecture Patterns
 
 ### Standardized Template Configuration Pattern
@@ -76,36 +80,45 @@ const collectParams = async (config: TemplateConfig) => {
 };
 ```
 
-### Template Discovery Pattern
+### Template Discovery System
 
-```typescript
-// Generic template loading that works with any compliant template
-interface TemplateDefinition {
-  config: TemplateConfig;
-  module: any;
-}
+### Template Location Configuration
 
-const discoverTemplates = async (
-  templateDir: string
-): Promise<Map<string, TemplateDefinition>> => {
-  const templates = new Map();
+Templates are stored in a configurable directory:
 
-  // Scan directory for .ts files
-  const files = await glob(`${templateDir}/*.ts`);
+- **Environment Variable**: `AI_PROMPTS_TEMPLATES_DIR`
+- **Default Fallback**: `src/templates/` (when environment variable not set)
+- **Path Support**: Both relative and absolute paths supported
+- **Validation**: Directory existence and readability checked at runtime
 
-  for (const file of files) {
-    const module = await import(file);
-    const config = module.default as TemplateConfig;
+### Discovery Process
 
-    // Validate config structure
-    if (isValidTemplateConfig(config)) {
-      templates.set(config.name, { config, module });
-    }
-  }
+```mermaid
+stateDiagram-v2
+    %% Purpose: Template discovery workflow with configurable directory
+    %% Key Rule: Environment variable takes precedence over default
+    %% Critical: Validation ensures directory exists before scanning
 
-  return templates;
-};
+    %% Configuration resolution
+    [*] --> CheckEnvVar : Read AI_PROMPTS_TEMPLATES_DIR
+    CheckEnvVar --> UseEnvPath : Environment variable set
+    CheckEnvVar --> UseDefault : No environment variable
+    UseEnvPath --> ValidateDir : Resolve to absolute path
+    UseDefault --> ValidateDir : Use src/templates as default
+
+    %% Directory validation and scanning
+    ValidateDir --> ScanFiles : Directory exists and readable
+    ValidateDir --> [*] : Directory invalid - return error
+    ScanFiles --> LoadTemplates : Found .ts/.js files
+    ScanFiles --> [*] : No template files found
+    LoadTemplates --> [*] : Templates loaded successfully
 ```
+
+1. **Configuration Resolution**: Check `AI_PROMPTS_TEMPLATES_DIR` environment variable, fallback to `src/templates`
+2. **Directory Validation**: Verify directory exists and is readable
+3. **File Scanning**: Recursively scan for `.ts` and `.js` files
+4. **Template Loading**: Dynamic import and validation of each template file
+5. **Registry Population**: Store valid templates in registry with error tracking
 
 ### Command Pattern (Commander.js)
 

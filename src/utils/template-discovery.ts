@@ -7,6 +7,7 @@ import {
   FileSystemError,
   isTemplateConfig,
 } from "@/types";
+import { getTemplatesDirectory } from "./config";
 
 /**
  * Result of template discovery operation
@@ -36,7 +37,7 @@ export interface TemplateDiscoveryError {
  * Options for template discovery
  */
 export interface DiscoveryOptions {
-  /** Directory to search for templates (default: src/templates) */
+  /** Directory to search for templates (default: from AI_PROMPTS_TEMPLATES_DIR env var or src/templates) */
   templatesDir?: string;
   /** File extension to search for (default: .ts) */
   extension?: string;
@@ -51,7 +52,7 @@ export interface DiscoveryOptions {
 export async function discoverTemplates(
   options: DiscoveryOptions = {}
 ): Promise<DiscoveryResult> {
-  const { templatesDir = "src/templates", extension = ".ts" } = options;
+  const { templatesDir = getTemplatesDirectory(), extension = ".ts" } = options;
 
   const templates = new Map<string, TemplateDefinition>();
   const errors: TemplateDiscoveryError[] = [];

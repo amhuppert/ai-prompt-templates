@@ -10,6 +10,10 @@ import { collectParameters } from "./utils/parameter-collection.js";
 import { generatePrompt } from "./utils/template-generation.js";
 import { writeFile } from "node:fs/promises";
 import { join } from "node:path";
+import {
+  getTemplatesDirectory,
+  getTemplatesDirectorySource,
+} from "./utils/config.js";
 
 const program = new Command();
 
@@ -37,7 +41,10 @@ program
 
       const templateNames = getTemplateNames(result.templates);
       if (templateNames.length === 0) {
-        console.log("📭 No templates found in src/templates/");
+        const templatesDir = getTemplatesDirectory();
+        const dirSource = getTemplatesDirectorySource();
+        console.log(`📭 No templates found in ${templatesDir}/`);
+        console.log(`   (configured via ${dirSource})`);
         return;
       }
 
